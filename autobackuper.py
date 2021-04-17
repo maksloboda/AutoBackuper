@@ -2,7 +2,9 @@ import subprocess
 import sys
 import time
 
-# https://stackoverflow.com/questions/3431825/generating-an-md5-checksum-of-a-file
+# https://stackoverflow.com/a/3431838
+# https://creativecommons.org/licenses/by-sa/4.0/
+####
 import hashlib
 def md5(fname):
     hash_md5 = hashlib.md5()
@@ -10,7 +12,7 @@ def md5(fname):
         for chunk in iter(lambda: f.read(4096), b""):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
-
+####
 
 def printerr(msg):
     print(msg, file=sys.stderr)
