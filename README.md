@@ -13,4 +13,3 @@ Code will init a git repository and every `[poll interval in seconds]` check for
 # Requirements
 
 - git
-- python3
