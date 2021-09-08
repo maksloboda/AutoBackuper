@@ -1,6 +1,7 @@
 import subprocess
 import sys
 import time
+import click
 
 # https://stackoverflow.com/a/3431838
 # https://creativecommons.org/licenses/by-sa/4.0/
@@ -17,24 +18,6 @@ def md5(fname):
 def printerr(msg):
     print(msg, file=sys.stderr)
 
-
-def parse_arguments():
-    if len(sys.argv) != 3:
-        printerr("Incorrect arguments!")
-        printerr("Correct use: command [check delay in seconds] [file name]")
-        sys.exit(1)
-
-    delay_str = sys.argv[1]
-    file_str = sys.argv[2]
-    delay = None
-    try:
-        delay = int(delay_str)
-    except ValueError:
-        printerr("Invalid time specified!")
-        sys.exit(1)
-
-    return (delay, file_str)
-
 def can_read_file(file_name):
     try:
         with open(file_name, "r") as f:
@@ -43,32 +26,36 @@ def can_read_file(file_name):
         return False
     return True
 
-def main():
-    delay, file_name = parse_arguments()
+
+@click.command()
+@click.argument("filename", type=click.Path(exists=True))
+@click.argument("poll_interval_seconds", type=click.INT, default=60)
+def cli(poll_interval_seconds, filename):
     try:
         subprocess.run(["git", "init"])
     except CalledProcessError:
         printerr("git init failed!")
         sys.exit(1)
+    
     last_md5 = ""
     while True:
-        if not can_read_file(file_name):
-            print(f"File is mising or cant be read at {file_name}")
+        if not can_read_file(filename):
+            print(f"File is mising or cant be read at {filename}")
         else:
-            value = md5(file_name)
+            value = md5(filename)
             if last_md5 == value:
                 print("md5 match, nothing to do")
             else:
                 try:
-                    subprocess.run(["git", "add", "--", file_name])
+                    subprocess.run(["git", "add", "--", filename])
                     subprocess.run(["git", "commit", "-m", f'"Auto Backup md5 {value}"',
-                            "-o", "--", file_name])
+                            "-o", "--", filename])
                     last_md5 = value
                 except CalledProcessError:
                     printerr("git commit failed!")
-        time.sleep(delay)
+        time.sleep(poll_interval_seconds)
 
 
 
 if __name__ == "__main__":
-    main()
+    cli()

@@ -1,16 +1,15 @@
 # AutoBackuper
 
-Python3 script for backing up files. Intended use is to passively back up word or latex files in case of corruption or need to reference an older version of a file.
+Python3 utility for backing up files. Intended use is to automatically back up word or latex files in case of corruption or need to reference an older version of a file.
 
 # Usage
 
 Navigate to the folder where you want git repository to be located and execute: 
 
-`python3 [path to autobackuper.py] [poll interval in seconds] [file name]`
+`autobackuper FILENAME [poll interval in seconds]`
 
-Code will init a git repository and every `[poll interval in seconds]` check for file changes in `[file name]`, in case of a file change it will create a commit with the updated version.
+Utility will init a git repository, after that specifie file will be checked for changes, and automatically commited.
 
 # Requirements
 
-- git
-- python3
+- git must be available in path
